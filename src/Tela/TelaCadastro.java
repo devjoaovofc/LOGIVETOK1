@@ -1,16 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-// src/Prontuario/gui/LogVetProntuarioGUI.java
-
 package Tela;
 
 import Tela.database.ConexaoBD;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -28,7 +22,7 @@ public class TelaCadastro extends JFrame {
         setLayout(null);
         getContentPane().setBackground(Color.WHITE);
 
-        // Logo LogiVet - Caminho para a imagem "logovet.png.png" AGORA em "/Imagens/"
+        // Logo LogiVet
         ImageIcon originalIcon = new ImageIcon(getClass().getResource("/Imagens/logovet.png.png"));
         Image imagemRedimensionada = originalIcon.getImage().getScaledInstance(250, 100, Image.SCALE_SMOOTH);
         JLabel logo = new JLabel(new ImageIcon(imagemRedimensionada));
@@ -37,21 +31,53 @@ public class TelaCadastro extends JFrame {
 
         int baseX = 450, larguraCampo = 300, alturaCampo = 32, espacamentoVertical = 50, yAtual = 140;
 
-        // Nome - Caminho para a imagem "icone_email.png" AGORA em "/Imagens/"
+        // Nome
         JPanel painelNome = criarPainelCampo(baseX, yAtual, larguraCampo, alturaCampo, "/Imagens/icone_email.png");
         campoNome = criarCampoTexto(32, 5, 260, 24);
+        campoNome.setText("Digite seu nome (sem números)");
+        campoNome.setForeground(Color.GRAY);
+        campoNome.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (campoNome.getText().equals("Digite seu nome")) {
+                    campoNome.setText("");
+                    campoNome.setForeground(Color.BLACK);
+                }
+            }
+            public void focusLost(FocusEvent e) {
+                if (campoNome.getText().isEmpty()) {
+                    campoNome.setText("Digite seu nome");
+                    campoNome.setForeground(Color.GRAY);
+                }
+            }
+        });
         painelNome.add(campoNome);
         add(painelNome);
         yAtual += espacamentoVertical;
 
-        // Email - Caminho para a imagem "gmail 1.png" AGORA em "/Imagens/"
+        // Email
         JPanel painelEmail = criarPainelCampo(baseX, yAtual, larguraCampo, alturaCampo, "/Imagens/gmail 1.png");
         campoEmail = criarCampoTexto(32, 5, 260, 24);
+        campoEmail.setText("Digite seu e-mail");
+        campoEmail.setForeground(Color.GRAY);
+        campoEmail.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (campoEmail.getText().equals("Digite seu e-mail")) {
+                    campoEmail.setText("");
+                    campoEmail.setForeground(Color.BLACK);
+                }
+            }
+            public void focusLost(FocusEvent e) {
+                if (campoEmail.getText().isEmpty()) {
+                    campoEmail.setText("Digite seu e-mail");
+                    campoEmail.setForeground(Color.GRAY);
+                }
+            }
+        });
         painelEmail.add(campoEmail);
         add(painelEmail);
         yAtual += espacamentoVertical;
 
-        // Função - Caminho para a imagem "mala.png" AGORA em "/Imagens/"
+        // Função
         JPanel painelFuncao = criarPainelCampo(baseX, yAtual, larguraCampo, alturaCampo, "/Imagens/mala.png");
         String[] funcoes = {"Estoquista"};
         comboFuncao = new JComboBox<>(funcoes);
@@ -63,17 +89,37 @@ public class TelaCadastro extends JFrame {
         add(painelFuncao);
         yAtual += espacamentoVertical;
 
-        // Senha - Caminho para a imagem "icone_senha.png" AGORA em "/Imagens/"
+        // Senha
         JPanel painelSenha = criarPainelCampo(baseX, yAtual, larguraCampo, alturaCampo, "/Imagens/icone_senha.png");
         campoSenha = new JPasswordField();
         campoSenha.setBounds(32, 5, 260, 24);
         campoSenha.setOpaque(false);
         campoSenha.setBorder(null);
+        campoSenha.setText("Digite sua senha");
+        campoSenha.setForeground(Color.GRAY);
+        campoSenha.setEchoChar((char) 0);
+        campoSenha.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (new String(campoSenha.getPassword()).equals("Digite sua senha")) {
+                    campoSenha.setText("");
+                    campoSenha.setForeground(Color.BLACK);
+                    campoSenha.setEchoChar('•');
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (new String(campoSenha.getPassword()).isEmpty()) {
+                    campoSenha.setText("Digite sua senha");
+                    campoSenha.setForeground(Color.GRAY);
+                    campoSenha.setEchoChar((char) 0);
+                }
+            }
+        });
         painelSenha.add(campoSenha);
         add(painelSenha);
         yAtual += espacamentoVertical;
 
-        // Botão
+        // Botão Cadastrar
         JButton botaoCadastrar = new JButton("CADASTRAR") {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
@@ -103,12 +149,25 @@ public class TelaCadastro extends JFrame {
         String funcao = (String) comboFuncao.getSelectedItem();
         String senha = new String(campoSenha.getPassword());
 
-        if (nome.isEmpty() || email.isEmpty() || funcao == null || senha.isEmpty()) {
+        if (nome.isEmpty() || nome.equals("Digite seu nome (sem números)") ||
+            email.isEmpty() || email.equals("Digite seu e-mail") ||
+            senha.isEmpty() || senha.equals("Digite sua senha") ||
+            funcao == null) {
+
             JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Validação de senha
+        if (!nome.matches("^[A-Za-zÀ-ÿ\\s]+$")) {
+            JOptionPane.showMessageDialog(this, "O nome não pode conter números ou caracteres especiais.");
+            return;
+        }
+
+        if (!email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            JOptionPane.showMessageDialog(this, "Digite um e-mail válido.");
+            return;
+        }
+
         if (!senha.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.,_\\-@#$%&*?!])[A-Za-z\\d.,_\\-@#$%&*?!]{8,15}$")) {
             JOptionPane.showMessageDialog(this,
                 "<html>A senha deve conter:<br>- De 8 a 15 caracteres<br>- Pelo menos uma letra maiúscula<br>- Pelo menos uma letra minúscula<br>- Pelo menos um número<br>- Pelo menos um caractere especial: . , _ - @ # $ % & * ? !</html>",
@@ -138,7 +197,6 @@ public class TelaCadastro extends JFrame {
         }
     }
 
-
     private JPanel criarPainelCampo(int x, int y, int largura, int altura, String caminhoIcone) {
         JPanel painel = new JPanel(null) {
             protected void paintComponent(Graphics g) {
@@ -151,10 +209,11 @@ public class TelaCadastro extends JFrame {
         painel.setBounds(x, y, largura, altura);
         painel.setOpaque(false);
         painel.setBackground(new Color(200, 240, 230));
-        // Usa o caminhoIcone passado, que agora é absoluto dentro do classpath
+
         JLabel icone = new JLabel(new ImageIcon(getClass().getResource(caminhoIcone)));
         icone.setBounds(5, 5, 24, 24);
         painel.add(icone);
+
         return painel;
     }
 

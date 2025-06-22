@@ -36,15 +36,13 @@ public class TelaAlterarSenha extends JFrame {
 
         // Campo Nova Senha
         JPanel painelNovaSenha = criarPainelCampo(450, 250, 300, 32, "/Imagens/cadeadoreset.png");
-        JPasswordField novaSenha = criarCampoSenha(32, 5, 260, 24);
-        novaSenha.setToolTipText("Digite sua nova senha");
+        JPasswordField novaSenha = criarCampoSenha(32, 5, 260, 24, "Digite sua nova senha");
         painelNovaSenha.add(novaSenha);
         add(painelNovaSenha);
 
         // Campo Repetir Senha
         JPanel painelRepetirSenha = criarPainelCampo(450, 300, 300, 32, "/Imagens/icone_senha.png");
-        JPasswordField repetirSenha = criarCampoSenha(32, 5, 260, 24);
-        repetirSenha.setToolTipText("Repita sua nova senha");
+        JPasswordField repetirSenha = criarCampoSenha(32, 5, 260, 24, "Repita sua nova senha");
         painelRepetirSenha.add(repetirSenha);
         add(painelRepetirSenha);
 
@@ -71,7 +69,7 @@ public class TelaAlterarSenha extends JFrame {
             String senha1 = new String(novaSenha.getPassword());
             String senha2 = new String(repetirSenha.getPassword());
 
-            if (senha1.isEmpty() || senha2.isEmpty()) {
+            if (senha1.equals("Digite sua nova senha") || senha2.equals("Repita sua nova senha") || senha1.isEmpty() || senha2.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Por favor, preencha os dois campos.");
                 return;
             }
@@ -81,7 +79,6 @@ public class TelaAlterarSenha extends JFrame {
                 return;
             }
 
-            // Validação da nova senha
             if (!senha1.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[.,_\\-@#$%&*?!])[A-Za-z\\d.,_\\-@#$%&*?!]{8,15}$")) {
                 JOptionPane.showMessageDialog(this,
                     "<html>A senha deve conter:<br>- De 8 a 15 caracteres<br>- Pelo menos uma letra maiúscula<br>- Pelo menos uma letra minúscula<br>- Pelo menos um número<br>- Pelo menos um caractere especial: . , _ - @ # $ % & * ? !</html>",
@@ -89,7 +86,7 @@ public class TelaAlterarSenha extends JFrame {
                 return;
             }
 
-            boolean sucesso = UsuarioDAO.atualizarSenha(email, senha1); // Aqui faz a alteração no banco
+            boolean sucesso = UsuarioDAO.atualizarSenha(email, senha1);
 
             if (sucesso) {
                 JOptionPane.showMessageDialog(this, "Senha redefinida com sucesso!");
@@ -128,11 +125,32 @@ public class TelaAlterarSenha extends JFrame {
         return painel;
     }
 
-    private JPasswordField criarCampoSenha(int x, int y, int largura, int altura) {
-        JPasswordField campo = new JPasswordField();
+    private JPasswordField criarCampoSenha(int x, int y, int largura, int altura, String placeholder) {
+        JPasswordField campo = new JPasswordField(placeholder);
         campo.setBounds(x, y, largura, altura);
         campo.setOpaque(false);
         campo.setBorder(null);
+        campo.setForeground(Color.GRAY);
+        campo.setEchoChar((char) 0); // Mostrar texto como normal inicialmente
+
+        campo.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (new String(campo.getPassword()).equals(placeholder)) {
+                    campo.setText("");
+                    campo.setForeground(Color.BLACK);
+                    campo.setEchoChar('●'); // Ativa ocultação
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (new String(campo.getPassword()).isEmpty()) {
+                    campo.setText(placeholder);
+                    campo.setForeground(Color.GRAY);
+                    campo.setEchoChar((char) 0); // Mostra como texto
+                }
+            }
+        });
+
         return campo;
     }
 }

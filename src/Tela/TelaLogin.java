@@ -1,17 +1,14 @@
-// Conteúdo de pirrico/logivet11/Logivet11-b4e66927542ce07dce03e7e0eb18e87734d1e720/Tela/TelaLogin.java
 package Tela;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import Tela.database.ConexaoBD;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import Tela.TelaMenuItens;
-import Tela.dao.UsuarioDAO; // Importa o novo UsuarioDAO
-import Tela.model.Usuario; // Importa o novo modelo Usuario
+import Tela.dao.UsuarioDAO;
+import Tela.model.Usuario;
 
 public class TelaLogin extends JFrame {
     private JTextField campoEmail;
@@ -32,7 +29,7 @@ public class TelaLogin extends JFrame {
         painelEsquerdo.setLayout(null);
         add(painelEsquerdo);
 
-        // Caminho para a imagem "logovet.png.png" agora diretamente em "/Imagens/"
+        // Logo
         ImageIcon originalIcon = new ImageIcon(getClass().getResource("/Imagens/logovet.png.png"));
         Image imagemRedimensionada = originalIcon.getImage().getScaledInstance(250, 100, Image.SCALE_SMOOTH);
         JLabel logo = new JLabel(new ImageIcon(imagemRedimensionada));
@@ -55,16 +52,33 @@ public class TelaLogin extends JFrame {
         painelEmail.setBackground(new Color(0xA6D5C1));
         painelEsquerdo.add(painelEmail);
 
-        // Caminho para a imagem "gmail 1.png" agora diretamente em "/Imagens/"
         JLabel iconEmail = new JLabel(new ImageIcon(getClass().getResource("/Imagens/gmail 1.png")));
         iconEmail.setBounds(5, 5, 24, 24);
         painelEmail.add(iconEmail);
 
-        campoEmail = new JTextField();
+        campoEmail = new JTextField("Digite seu email");
+        campoEmail.setForeground(Color.GRAY);
         campoEmail.setBounds(35, 5, 260, 24);
         campoEmail.setBorder(null);
         campoEmail.setOpaque(false);
         painelEmail.add(campoEmail);
+
+        // Placeholder funcional para email
+        campoEmail.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                if (campoEmail.getText().equals("Digite seu email")) {
+                    campoEmail.setText("");
+                    campoEmail.setForeground(Color.BLACK);
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                if (campoEmail.getText().isEmpty()) {
+                    campoEmail.setForeground(Color.GRAY);
+                    campoEmail.setText("Digite seu email");
+                }
+            }
+        });
 
         // Painel do campo de senha
         JPanel painelSenha = new JPanel(null) {
@@ -80,16 +94,38 @@ public class TelaLogin extends JFrame {
         painelSenha.setBackground(new Color(0xA6D5C1));
         painelEsquerdo.add(painelSenha);
 
-        // Caminho para a imagem "icone_senha.png" agora diretamente em "/Imagens/"
         JLabel iconSenha = new JLabel(new ImageIcon(getClass().getResource("/Imagens/icone_senha.png")));
         iconSenha.setBounds(5, 5, 24, 24);
         painelSenha.add(iconSenha);
 
-        campoSenha = new JPasswordField();
+        campoSenha = new JPasswordField("Digite sua senha");
+        campoSenha.setForeground(Color.GRAY);
+        campoSenha.setEchoChar((char) 0);
         campoSenha.setBounds(35, 5, 260, 24);
         campoSenha.setBorder(null);
         campoSenha.setOpaque(false);
         painelSenha.add(campoSenha);
+
+        // Placeholder funcional para senha
+        campoSenha.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                String senha = new String(campoSenha.getPassword());
+                if (senha.equals("Digite sua senha")) {
+                    campoSenha.setText("");
+                    campoSenha.setForeground(Color.BLACK);
+                    campoSenha.setEchoChar('●');
+                }
+            }
+
+            public void focusLost(FocusEvent e) {
+                String senha = new String(campoSenha.getPassword());
+                if (senha.isEmpty()) {
+                    campoSenha.setForeground(Color.GRAY);
+                    campoSenha.setText("Digite sua senha");
+                    campoSenha.setEchoChar((char) 0);
+                }
+            }
+        });
 
         // Botão LOGIN
         JButton botaoLogin = new JButton("LOGIN") {
@@ -110,16 +146,19 @@ public class TelaLogin extends JFrame {
         painelEsquerdo.add(botaoLogin);
 
         botaoLogin.addActionListener(e -> {
-            UsuarioDAO usuarioDAO = new UsuarioDAO(); // Instancia o DAO de usuário
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
             String email = campoEmail.getText().trim();
             String senha = new String(campoSenha.getPassword());
-            
-            // Tenta autenticar o usuário e buscar seus dados
+
+            // Evita que o texto padrão seja interpretado como input real
+            if (email.equals("Digite seu email")) email = "";
+            if (senha.equals("Digite sua senha")) senha = "";
+
             Usuario usuarioLogado = usuarioDAO.buscarUsuarioPorEmailESenha(email, senha);
 
             if (usuarioLogado != null) {
                 JOptionPane.showMessageDialog(this, "Login efetuado com sucesso!");
-                new TelaMenuItens(usuarioLogado).setVisible(true); // Passa o usuário logado para TelaMenuItens
+                new TelaMenuItens(usuarioLogado).setVisible(true);
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -154,7 +193,6 @@ public class TelaLogin extends JFrame {
             }
         });
 
-        // Caminho para a imagem "uniceplac.png" AGORA em "/Imagens/"
         JLabel logoUniceplac = new JLabel(new ImageIcon(getClass().getResource("/Imagens/uniceplac.png")));
         logoUniceplac.setBounds(70, 550, 250, 60);
         painelEsquerdo.add(logoUniceplac);
@@ -165,7 +203,6 @@ public class TelaLogin extends JFrame {
         painelDireito.setLayout(null);
         add(painelDireito);
 
-        // Caminho para a imagem "imagem_lateral.png" AGORA em "/Imagens/"
         JLabel imagemLateral = new JLabel(new ImageIcon(getClass().getResource("/Imagens/imagem_lateral.png")));
         imagemLateral.setBounds(0, 0, 600, 700);
         painelDireito.add(imagemLateral);
@@ -173,11 +210,7 @@ public class TelaLogin extends JFrame {
         setVisible(true);
     }
 
-    // MUDANÇA: Novo método para autenticar e buscar o usuário pelo email e senha
     private boolean validarLogin() {
-        // A lógica de validação agora está no ActionListener do botão.
-        // Este método pode ser removido se não houver outras chamadas.
-        // Mantenho apenas para compatibilidade se houver outras chamadas indiretas.
-        return true; // A autenticação real é feita no ActionListener
+        return true;
     }
 }
