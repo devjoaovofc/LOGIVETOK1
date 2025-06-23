@@ -1,49 +1,79 @@
+// Define o pacote onde esta classe pertence
 package Tela;
 
+// Importações de bibliotecas Swing e AWT para construção da interface gráfica
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+// Define a classe da tela de recuperação de senha, herdando de JFrame
 public class TelaRecuperarSenha extends JFrame {
 
+    // Construtor da tela de recuperação de senha
     public TelaRecuperarSenha() {
+        // Define o título da janela
         setTitle("LogiVet - Recuperar Senha");
+
+        // Define o tamanho da janela (largura x altura)
         setSize(1200, 700);
+
+        // Define que o programa será encerrado ao fechar a janela
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // Define o layout como absoluto (sem gerenciador de layout)
         setLayout(null);
+
+        // Centraliza a janela na tela
         setLocationRelativeTo(null);
+
+        // Define o fundo da janela como branco
         getContentPane().setBackground(Color.WHITE);
 
-        // Logo principal
-        // Make sure the path to the image is correct.
-        // Assuming 'logovet.png.png' is directly under a 'Imagens' folder in your resources.
+        // ---------------- LOGO PRINCIPAL ----------------
+
+        // Carrega a imagem da logo do LogiVet
         ImageIcon logoIcon = new ImageIcon(getClass().getResource("/Imagens/logovet.png.png"));
+
+        // Redimensiona a imagem da logo para 250x100 pixels
         Image logoImg = logoIcon.getImage().getScaledInstance(250, 100, Image.SCALE_SMOOTH);
+
+        // Cria um JLabel com a imagem redimensionada
         JLabel logo = new JLabel(new ImageIcon(logoImg));
+
+        // Define a posição e tamanho da logo na tela
         logo.setBounds(475, 30, 250, 100);
+
+        // Adiciona a logo à janela
         add(logo);
 
-        JLabel instrucao = new JLabel("ESQUECEU A SENHA?");
-        instrucao.setBounds(500, 140, 250, 25);
-        instrucao.setFont(new Font("Arial", Font.BOLD, 18));
-        add(instrucao);
+        // ---------------- TEXTOS INFORMATIVOS ----------------
 
+        // Cria o título "ESQUECEU A SENHA?"
+        JLabel instrucao = new JLabel("ESQUECEU A SENHA?");
+        instrucao.setBounds(500, 140, 250, 25); // Posição e tamanho
+        instrucao.setFont(new Font("Arial", Font.BOLD, 18)); // Fonte e estilo
+        add(instrucao); // Adiciona à janela
+
+        // Cria um texto explicativo abaixo do título
         JLabel info = new JLabel("Enviaremos as instruções para você recuperar sua senha.");
         info.setBounds(410, 170, 400, 20);
         info.setFont(new Font("Arial", Font.PLAIN, 14));
         add(info);
 
-        // Painel de email
-        // Make sure the path to the image is correct.
-        // Assuming 'gmail 1.png' is directly under a 'Imagens' folder in your resources.
+        // ---------------- CAMPO DE EMAIL ----------------
+
+        // Cria um painel com ícone para o campo de e-mail
         JPanel painelEmail = criarPainelCampo(450, 210, 300, 32, "/Imagens/gmail 1.png");
+
+        // Cria o campo de texto para digitar o e-mail
         JTextField campoEmail = criarCampoTexto(32, 5, 260, 24);
-        campoEmail.setText("Digite seu email");
-        
-        // Add a FocusListener to clear the default text when the field gains focus
+        campoEmail.setText("Digite seu email"); // Texto de dica
+
+        // Adiciona evento para limpar o campo quando o usuário clicar
         campoEmail.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
+                // Se estiver com o texto de dica, limpa o campo
                 if (campoEmail.getText().equals("Digite seu email")) {
                     campoEmail.setText("");
                 }
@@ -51,100 +81,140 @@ public class TelaRecuperarSenha extends JFrame {
 
             @Override
             public void focusLost(FocusEvent e) {
+                // Se o usuário não digitou nada, restaura o texto de dica
                 if (campoEmail.getText().isEmpty()) {
                     campoEmail.setText("Digite seu email");
                 }
             }
         });
-        
+
+        // Adiciona o campo de texto ao painel
         painelEmail.add(campoEmail);
+
+        // Adiciona o painel à tela
         add(painelEmail);
 
+        // ---------------- BOTÃO ENVIAR ----------------
+
+        // Cria o botão "ENVIAR" com visual personalizado (arredondado)
         JButton btnEnviar = new JButton("ENVIAR") {
-            // Custom painting for rounded button
             @Override
             protected void paintComponent(Graphics g) {
+                // Personaliza a pintura do botão
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-                super.paintComponent(g);
+                g2.setColor(getBackground()); // Usa a cor de fundo
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); // Borda arredondada
+                super.paintComponent(g); // Chama o método padrão
             }
         };
+
+        // Define posição e tamanho do botão
         btnEnviar.setBounds(500, 260, 200, 40);
-        btnEnviar.setBackground(new Color(255, 119, 51)); // Orange color
-        btnEnviar.setForeground(Color.WHITE);
-        btnEnviar.setFocusPainted(false);
-        btnEnviar.setContentAreaFilled(false); // Needed for custom paintComponent to work
-        btnEnviar.setOpaque(true); // Make sure the background is painted
+
+        // Define a cor de fundo e do texto do botão
+        btnEnviar.setBackground(new Color(255, 119, 51)); // Laranja
+        btnEnviar.setForeground(Color.WHITE); // Texto branco
+
+        // Define comportamento visual do botão
+        btnEnviar.setFocusPainted(false);         // Remove contorno ao focar
+        btnEnviar.setContentAreaFilled(false);    // Necessário para o botão personalizado
+        btnEnviar.setOpaque(true);                // Permite pintar o fundo
+
+        // Adiciona o botão à janela
         add(btnEnviar);
 
-        // Action listener for the "ENVIAR" button
+        // ---------------- AÇÃO DO BOTÃO ENVIAR ----------------
+
+        // Define o que acontece ao clicar no botão "ENVIAR"
         btnEnviar.addActionListener(e -> {
+            // Captura o e-mail digitado e remove espaços
             String email = campoEmail.getText().trim();
 
+            // Verifica se o campo está vazio, sem @ ou ainda com o texto de dica
             if (email.isEmpty() || !email.contains("@") || email.equals("Digite seu email")) {
-                // Use a custom message box instead of JOptionPane.showMessageDialog for better UI control
-                // For this example, we'll keep JOptionPane for simplicity, but in a real app,
-                // you'd implement a custom dialog.
+                // Exibe mensagem de erro
                 JOptionPane.showMessageDialog(this, "Digite um e-mail válido.", "Erro de Validação", JOptionPane.WARNING_MESSAGE);
-                return;
+                return; // Encerra a ação
             }
 
-            // Instead of showing a message and disposing, open TelaVerificandoEmail
-            // This class (TelaRecuperarSenha) will remain open while TelaVerificandoEmail does its work.
-            // TelaVerificandoEmail will then handle the next step (TelaAlterarSenha or error message).
+            // Abre a tela de verificação de e-mail passando o e-mail informado
             new TelaVerificandoEmail(email);
-            // Optionally, you might want to disable this frame while verification is happening
-            // setEnabled(false); 
-            // Or you can dispose this frame if you are sure TelaVerificandoEmail will handle everything
-            // dispose(); 
-            // For now, let's keep it open to show the flow clearly.
+
+            // Comentado: poderia desabilitar ou fechar essa janela se quiser
+            // setEnabled(false);
+            // dispose();
         });
 
-        // Logo Uniceplac
-        // Make sure the path to the image is correct.
-        // Assuming 'uniceplac.png' is directly under a 'Imagens' folder in your resources.
+        // ---------------- LOGO UNICEPLAC ----------------
+
+        // Cria um JLabel com a imagem da logo da Uniceplac
         JLabel logoUniceplac = new JLabel(new ImageIcon(getClass().getResource("/Imagens/uniceplac.png")));
+
+        // Define a posição e tamanho do logo
         logoUniceplac.setBounds(70, 550, 250, 60);
+
+        // Adiciona o logo da Uniceplac à tela
         add(logoUniceplac);
 
+        // Exibe a janela na tela
         setVisible(true);
     }
 
-    // Helper method to create a rounded panel for text fields
+    // ---------------- MÉTODO AUXILIAR: Criar painel com ícone e estilo ----------------
     private JPanel criarPainelCampo(int x, int y, int largura, int altura, String caminhoIcone) {
+        // Cria um painel com layout nulo (posição manual dos componentes)
         JPanel painel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
+                // Personaliza a pintura do fundo com bordas arredondadas
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(getBackground());
-                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
-                super.paintComponent(g); // Call super to ensure children are painted
+                g2.setColor(getBackground()); // Usa a cor do fundo
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); // Borda arredondada
+                super.paintComponent(g); // Garante que os filhos (text field) serão desenhados
             }
         };
-        painel.setBounds(x, y, largura, altura);
-        painel.setOpaque(false); // Make it non-opaque so custom painting is visible
-        painel.setBackground(new Color(200, 240, 230)); // Light blue-green color
 
-        // Load and add the icon to the panel
-        // Ensure the path is correct for the icon
+        // Define a posição e tamanho do painel
+        painel.setBounds(x, y, largura, altura);
+
+        // Torna o painel transparente para permitir customização
+        painel.setOpaque(false);
+
+        // Define a cor de fundo do painel
+        painel.setBackground(new Color(200, 240, 230)); // Verde-água claro
+
+        // Carrega o ícone especificado pelo caminho
         ImageIcon icon = new ImageIcon(getClass().getResource(caminhoIcone));
+
+        // Redimensiona o ícone para 24x24 pixels
         Image scaledIconImage = icon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+
+        // Cria o JLabel com o ícone redimensionado
         JLabel icone = new JLabel(new ImageIcon(scaledIconImage));
-        icone.setBounds(5, 5, 24, 24);
+        icone.setBounds(5, 5, 24, 24); // Posição do ícone dentro do painel
+
+        // Adiciona o ícone ao painel
         painel.add(icone);
 
-        return painel;
+        return painel; // Retorna o painel configurado
     }
 
-    // Helper method to create a transparent text field
+    // ---------------- MÉTODO AUXILIAR: Criar campo de texto personalizado ----------------
     private JTextField criarCampoTexto(int x, int y, int largura, int altura) {
+        // Cria um novo campo de texto
         JTextField campo = new JTextField();
+
+        // Define a posição e tamanho do campo
         campo.setBounds(x, y, largura, altura);
-        campo.setOpaque(false); // Make it transparent
-        campo.setBorder(null); // Remove default border
-        return campo;
+
+        // Deixa o campo transparente (sem fundo)
+        campo.setOpaque(false);
+
+        // Remove a borda padrão
+        campo.setBorder(null);
+
+        return campo; // Retorna o campo configurado
     }
 }
