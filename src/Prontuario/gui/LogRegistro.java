@@ -44,7 +44,7 @@ public class LogRegistro extends JPanel { //
 
         String[] titulos = {
                 "DATA", "HORÁRIO", "PROFESSOR / VETERINÁRIO",
-                "ANIMAL", "ESPÉCIE", "PRODUTOS / QUANTIDADE", "RESPONSÁVEL"
+                "ANIMAL", "ESPÉCIE", "PRODUTOS / QUANTIDADE"
         };
 
         for (String titulo : titulos) {

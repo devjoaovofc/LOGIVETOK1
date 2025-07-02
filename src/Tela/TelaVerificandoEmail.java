@@ -1,21 +1,16 @@
-// Define o pacote onde a classe está localizada
+
 package Tela;
 
-// Importa bibliotecas necessárias do Swing e da camada DAO
 import javax.swing.*;
 import Tela.dao.UsuarioDAO;
 import java.awt.*;
 
-// Define a classe da tela de verificação de e-mail, herdando da janela JFrame
 public class TelaVerificandoEmail extends JFrame {
 
-    // Declaração do rótulo que exibirá mensagens na tela
     private JLabel lblMensagem;
 
-    // Variável para armazenar o e-mail digitado pelo usuário
     private String email;
 
-    // Construtor da tela, recebe o e-mail como parâmetro
     public TelaVerificandoEmail(String email2) {
         // Armazena o e-mail recebido na variável da classe
         this.email = email2;
