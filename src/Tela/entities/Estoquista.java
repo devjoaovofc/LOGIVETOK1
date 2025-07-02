@@ -26,13 +26,6 @@ public class Estoquista extends Pessoa {
         System.out.println("Operação registrada: " + operacao);
     }
 
-    public void listarHistorico() {
-        System.out.println("Histórico de operações de " + getNome() + ":");
-        for (String op : historicoOperacoes) {
-            System.out.println("- " + op);
-        }
-    }
-
     @Override
     public void exibirInfo() {
         System.out.println("Estoquista: " + getNome() + " - Email: " + getEmail());

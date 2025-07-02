@@ -19,15 +19,24 @@ public class TelaLogin extends JFrame {
         setLocationRelativeTo(null);
         setLayout(null);
 
-        // Thread de carregamento inicial
         new Thread(() -> {
             System.out.println("Iniciando carregamento da tela de login...");
             try {
-                Thread.sleep(1000); // Simula carregamento de 1 segundo
+              
+                System.out.println("Verificando conexão com o servidor...");
+                Thread.sleep(1500);
+                System.out.println("Carregando configurações iniciais...");
+                Thread.sleep(900); 
+
+                System.out.println("Recursos de imagem pré-carregados...");
+                Thread.sleep(700); 
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
+               
+            } finally {
+                System.out.println("Tela de login pronta e carregada.");
             }
-            System.out.println("Tela de login carregada.");
         }).start();
 
         JPanel painelEsquerdo = new JPanel();
